@@ -429,8 +429,19 @@ public class AXmlResourceParser implements XmlResourceParser {
                 } catch (UndefinedResObjectException | ClassCastException ignored) {}
             }
 
-            return decoded != null ? decoded : resValue.encodeAsResXmlAttr();
-
+            String rst = decoded != null ? decoded : resValue.encodeAsResXmlAttr();
+            if (rst == null || rst.isEmpty()) {
+                if (valueType == TypedValue.TYPE_INT_DEC || valueType == TypedValue.TYPE_INT_HEX || valueType == TypedValue.TYPE_INT_BOOLEAN) {
+                    if (valueType == TypedValue.TYPE_INT_DEC) {
+                        return String.valueOf(valueData);
+                    }
+                    if (valueType == TypedValue.TYPE_INT_HEX) {
+                        return "0x" + Integer.toHexString(valueData).toUpperCase();
+                    }
+                    return valueData == 0? "false": "true";
+                }
+            }
+            return rst;
         } catch (AndrolibException ex) {
             setFirstError(ex);
             LOGGER.log(Level.WARNING, String.format("Could not decode attr value, using undecoded value "

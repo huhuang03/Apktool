@@ -25,3 +25,6 @@ gradle.properties
 
 # Patches
 *.patch
+
+apk_*/
+/*.apk
